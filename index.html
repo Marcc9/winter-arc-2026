@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0d0f14">
+  <meta name="description" content="Winter Arc 2026 — suivi quotidien de tes habitudes, progression et journal.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <title>Winter Arc 2026</title>
+  <style>
+    :root{
+      --bg:#0d0f14; --panel:#151922; --panel2:#1b202b; --text:#f4f5f7; --muted:#9ca4b3;
+      --line:#2a3140; --accent:#b8ff66; --accent2:#8dd83d; --danger:#ff7b7b; --shadow:0 12px 35px rgba(0,0,0,.3);
+      --safe-bottom:env(safe-area-inset-bottom,0px);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:radial-gradient(1200px 500px at 50% -10%,#283140 0%,var(--bg) 55%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    body{padding-bottom:calc(88px + var(--safe-bottom))}
+    button,input,textarea{font:inherit}
+    button{cursor:pointer}
+    .wrap{width:min(980px,100%);margin:0 auto;padding:18px 16px 28px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 18px}
+    .brand{display:flex;align-items:center;gap:10px}
+    .mark{width:42px;height:42px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(145deg,#222a37,#10131a);display:grid;place-items:center;font-size:21px;box-shadow:var(--shadow)}
+    h1{font-size:22px;margin:0;letter-spacing:-.03em}
+    .sub{font-size:12px;color:var(--muted);margin-top:2px}
+    .iconbtn{border:1px solid var(--line);background:#11151c;color:var(--text);width:42px;height:42px;border-radius:12px}
+    .hero{background:linear-gradient(145deg,#18202c,#12161e);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+    .hero:after{content:"";position:absolute;right:-50px;top:-70px;width:210px;height:210px;border-radius:50%;background:radial-gradient(circle,#b8ff6630 0%,transparent 67%)}
+    .hero-top{display:flex;justify-content:space-between;gap:16px;align-items:end;position:relative;z-index:1}
+    .day{font-size:44px;font-weight:800;line-height:1;letter-spacing:-.05em}
+    .day small{font-size:15px;font-weight:600;color:var(--muted);letter-spacing:0}
+    .date{color:var(--muted);font-size:13px;margin-top:7px;text-transform:capitalize}
+    .progress-ring{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--accent) calc(var(--p)*1%), #29313d 0)}
+    .progress-ring:before{content:"";position:absolute;width:72px;height:72px;border-radius:50%;background:#141922}
+    .ring-inner{position:relative;font-weight:800;font-size:17px}
+    .bar{height:10px;background:#2b3340;border-radius:99px;overflow:hidden;margin-top:18px;position:relative;z-index:1}
+    .bar>span{display:block;height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));width:0;border-radius:99px;transition:width .25s ease}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}
+    .stat{background:#10141b88;border:1px solid #2c3441;border-radius:16px;padding:11px}
+    .stat b{display:block;font-size:18px}
+    .stat span{font-size:11px;color:var(--muted)}
+    .section{margin-top:18px}
+    .section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 2px 9px}
+    .section-title h2{font-size:15px;margin:0}
+    .section-title span{font-size:12px;color:var(--muted)}
+    .card{background:rgba(21,25,34,.88);border:1px solid var(--line);border-radius:19px;padding:13px}
+    .habit-list{display:grid;gap:9px}
+    .habit{display:flex;align-items:center;gap:12px;padding:13px;background:#11151c;border:1px solid #252c38;border-radius:15px;transition:transform .15s ease,border-color .15s ease}
+    .habit:active{transform:scale(.99)}
+    .check{width:30px;height:30px;flex:0 0 auto;border-radius:10px;border:1px solid #485061;background:#171c25;display:grid;place-items:center;color:#111;transition:.18s}
+    .habit.done{border-color:#4f6b2c;background:#151c15}
+    .habit.done .check{background:var(--accent);border-color:var(--accent);font-weight:900}
+    .habit-main{min-width:0;flex:1}
+    .habit-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .habit-note{font-size:11px;color:var(--muted);margin-top:3px}
+    .remove{border:0;background:transparent;color:#738095;padding:7px}
+    .add{width:100%;border:1px dashed #465062;background:transparent;color:#c8ced8;padding:12px;border-radius:14px;margin-top:10px}
+    .week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+    .cell{aspect-ratio:1/1;border:1px solid #2a3240;border-radius:9px;background:#11151c;display:grid;place-items:center;font-size:11px;color:#667184}
+    .cell.done{background:#d4ff9a;color:#151b10;border-color:#d4ff9a;font-weight:800}
+    .cell.today{outline:2px solid #d7ff9f;outline-offset:2px}
+    .journal{width:100%;min-height:112px;resize:vertical;border:1px solid #303847;background:#10141b;color:var(--text);border-radius:14px;padding:12px;outline:none}
+    .journal:focus{border-color:#66734f}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    .secondary{border:1px solid var(--line);background:#11151c;color:var(--text);padding:11px 12px;border-radius:13px}
+    .primary{border:1px solid var(--accent);background:var(--accent);color:#10150c;padding:11px 12px;border-radius:13px;font-weight:800}
+    .tiny{font-size:11px;color:var(--muted);line-height:1.4}
+    .quote{font-size:14px;font-weight:700;line-height:1.45}
+    nav{position:fixed;left:0;right:0;bottom:0;padding:10px 16px calc(10px + var(--safe-bottom));background:linear-gradient(180deg,transparent,#0d0f14 25%);pointer-events:none;z-index:5}
+    .nav-inner{width:min(980px,100%);margin:0 auto;display:flex;gap:8px;justify-content:center;pointer-events:auto}
+    .nav-inner button{flex:1;max-width:240px;padding:11px;border-radius:13px;border:1px solid #2a3140;background:#141820;color:#c5ccd7;font-size:12px;font-weight:700}
+    .nav-inner button.active{background:#e0ffb3;color:#10150d;border-color:#e0ffb3}
+    .modal{position:fixed;inset:0;background:#05070ab8;display:none;align-items:flex-end;justify-content:center;z-index:20;padding:12px}
+    .modal.show{display:flex}
+    .sheet{width:min(560px,100%);background:#151922;border:1px solid var(--line);border-radius:23px;padding:16px;max-height:88vh;overflow:auto}
+    .sheet h3{margin:0 0 5px;font-size:18px}
+    .field{display:grid;gap:6px;margin:13px 0}
+    .field label{font-size:11px;color:var(--muted)}
+    .field input,.field textarea{width:100%;border:1px solid #303847;background:#10141b;color:var(--text);border-radius:12px;padding:11px;outline:none}
+    .empty{padding:16px;text-align:center;color:var(--muted);font-size:13px}
+    .toast{position:fixed;left:50%;bottom:calc(90px + var(--safe-bottom));transform:translateX(-50%) translateY(16px);background:#eef7dc;color:#142008;padding:9px 12px;border-radius:12px;font-size:12px;font-weight:700;opacity:0;pointer-events:none;transition:.2s;z-index:30}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    @media(min-width:720px){.wrap{padding:26px 20px 40px}.hero{padding:22px}.day{font-size:56px}.section{margin-top:22px}}
+  </style>
+</head>
+<body>
+  <main class="wrap" id="app"></main>
+  <nav><div class="nav-inner">
+    <button data-view="today" class="active">Aujourd'hui</button>
+    <button data-view="calendar">Calendrier</button>
+    <button data-view="settings">Réglages</button>
+  </div></nav>
+  <div id="modal" class="modal" aria-hidden="true"><div class="sheet" id="sheet"></div></div>
+  <div id="toast" class="toast"></div>
+<script>
+const START = new Date('2026-10-01T00:00:00');
+const END = new Date('2026-12-31T23:59:59');
+const MAX_DAYS = 92;
+const KEY = 'winterArc2026_v1';
+const defaultHabits = [
+  {id:crypto.randomUUID(), name:'Bouger un peu', note:'20 min de mouvement agréable', active:true},
+  {id:crypto.randomUUID(), name:'Lire / apprendre', note:'10 minutes minimum', active:true},
+  {id:crypto.randomUUID(), name:'Routine sommeil', note:'Se préparer calmement au coucher', active:true},
+  {id:crypto.randomUUID(), name:'Temps sans écran', note:'15 minutes sans réseaux', active:true}
+];
+let state = load();
+let currentView='today';
+let toastTimer;
+
+function load(){
+  try{
+    const raw=localStorage.getItem(KEY);
+    if(raw){const d=JSON.parse(raw); return {...d, habits:Array.isArray(d.habits)?d.habits:defaultHabits, checks:d.checks||{}, journal:d.journal||{}, startDate:d.startDate||START.toISOString().slice(0,10)};}
+  }catch(e){}
+  return {habits:defaultHabits, checks:{}, journal:{}, startDate:START.toISOString().slice(0,10), dark:true};
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+function iso(d){return d.toISOString().slice(0,10)}
+function parseDate(s){return new Date(s+'T12:00:00')}
+function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
+function startDate(){return parseDate(state.startDate||iso(START))}
+function dayNumber(date=new Date()){
+  const s=startDate(); const d=new Date(date.getFullYear(),date.getMonth(),date.getDate()); const ss=new Date(s.getFullYear(),s.getMonth(),s.getDate());
+  return clamp(Math.floor((d-ss)/86400000)+1,1,MAX_DAYS);
+}
+function dateForDay(n){const d=startDate(); d.setDate(d.getDate()+n-1); return d}
+function fmt(d){return new Intl.DateTimeFormat('fr-FR',{weekday:'long',day:'numeric',month:'long'}).format(d)}
+function todayKey(){return iso(new Date())}
+function activeHabits(){return state.habits.filter(h=>h.active)}
+function isDone(dayKey,id){return !!(state.checks[dayKey]||{})[id]}
+function setDone(dayKey,id,val){state.checks[dayKey] ||= {}; state.checks[dayKey][id]=!!val; save()}
+function dayCompletion(dayKey){const hs=activeHabits(); if(!hs.length)return 0; return Math.round(hs.filter(h=>isDone(dayKey,h.id)).length/hs.length*100)}
+function totalCompletion(){
+  let sum=0,total=0; const d0=new Date(startDate());
+  for(let i=0;i<MAX_DAYS;i++){const d=new Date(d0);d.setDate(d.getDate()+i); const k=iso(d); if(k>iso(END))break; total+=activeHabits().length; sum+=activeHabits().filter(h=>isDone(k,h.id)).length;}
+  return total?Math.round(sum/total*100):0;
+}
+function streak(){
+  let count=0; const d=new Date();
+  for(let i=0;i<MAX_DAYS;i++){
+    const k=iso(d); if(dayCompletion(k)===100){count++; d.setDate(d.getDate()-1);} else break;
+  }
+  return count;
+}
+function allDays(){const arr=[]; const s=startDate(); for(let i=0;i<MAX_DAYS;i++){const d=new Date(s);d.setDate(d.getDate()+i); if(d>END)break; arr.push(d)} return arr}
+
+function shell(){
+  const root=document.getElementById('app');
+  const active=currentView;
+  root.innerHTML=`<header><div class="brand"><div class="mark">⌁</div><div><h1>Winter Arc</h1><div class="sub">2026 · 1 oct → 31 déc</div></div></div><button class="iconbtn" id="quickAdd" aria-label="Ajouter une habitude">＋</button></header><div id="view"></div>`;
+  root.querySelectorAll('[data-view]').forEach(()=>{});
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===active));
+  renderView();
+}
+function renderView(){const v=document.getElementById('view'); if(currentView==='today')renderToday(v); else if(currentView==='calendar')renderCalendar(v); else renderSettings(v);}
+function renderToday(v){
+  const k=todayKey(); const n=dayNumber(); const pct=dayCompletion(k); const total=totalCompletion(); const st=streak();
+  v.innerHTML=`<section class="hero"><div class="hero-top"><div><div class="day">${n}<small> / ${MAX_DAYS} jours</small></div><div class="date">${fmt(new Date())}</div></div><div class="progress-ring" style="--p:${total}"><div class="ring-inner">${total}%</div></div></div><div class="bar"><span style="width:${total}%"></span></div><div class="stats"><div class="stat"><b>${pct}%</b><span>Aujourd'hui</span></div><div class="stat"><b>${st}</b><span>Jours complets d'affilée</span></div><div class="stat"><b>${total}%</b><span>Arc complété</span></div></div></section>
+  <section class="section"><div class="section-title"><h2>Les règles du jour</h2><span>${activeHabits().length} habitudes</span></div><div class="card"><div class="habit-list">${activeHabits().length?activeHabits().map(h=>`<div class="habit ${isDone(k,h.id)?'done':''}" data-id="${h.id}"><button class="check" aria-label="Cocher">${isDone(k,h.id)?'✓':''}</button><div class="habit-main"><div class="habit-name">${esc(h.name)}</div><div class="habit-note">${esc(h.note||'')}</div></div></div>`).join(''):`<div class="empty">Ajoute 3 à 5 habitudes simples pour commencer.</div>`}</div><button class="add" id="addHabit">＋ Ajouter une habitude</button></div></section>
+  <section class="section"><div class="section-title"><h2>Note du jour</h2><span>enregistrée automatiquement</span></div><textarea id="journal" class="journal" placeholder="Comment s'est passée ta journée ?">${esc(state.journal[k]||'')}</textarea></section>
+  <section class="section"><div class="card"><div class="quote">« Fais petit, mais fais-le assez souvent pour que ça compte. »</div><div class="tiny" style="margin-top:7px">Pas de redémarrage automatique après un jour raté : tu continues simplement le suivi.</div></div></section>`;
+  v.querySelectorAll('.habit').forEach(el=>el.addEventListener('click',()=>{const id=el.dataset.id; setDone(k,id,!isDone(k,id)); renderView();}));
+  document.getElementById('addHabit').onclick=()=>openHabitModal();
+  document.getElementById('quickAdd').onclick=()=>openHabitModal();
+  const j=document.getElementById('journal'); j.addEventListener('input',()=>{state.journal[k]=j.value; save();});
+}
+function renderCalendar(v){
+  const days=allDays();
+  const grouped=[]; for(let i=0;i<days.length;i+=7)grouped.push(days.slice(i,i+7));
+  const sum=Math.round(days.reduce((a,d)=>a+dayCompletion(iso(d)),0)/(days.length||1));
+  v.innerHTML=`<section class="hero"><div class="hero-top"><div><div class="day">${sum}%</div><div class="date">de progression moyenne</div></div><div class="progress-ring" style="--p:${sum}"><div class="ring-inner">${days.filter(d=>dayCompletion(iso(d))===100).length}</div></div></div><div class="bar"><span style="width:${sum}%"></span></div></section><section class="section"><div class="section-title"><h2>Calendrier</h2><span>vert = journée complète</span></div><div class="card">${grouped.map((week,wi)=>`<div style="margin-bottom:${wi<grouped.length-1?'12px':'0'}"><div class="tiny" style="margin-bottom:6px">Semaine ${wi+1}</div><div class="week">${week.map(d=>{const k=iso(d),pct=dayCompletion(k),today=k===todayKey();return `<div class="cell ${pct===100?'done':''} ${today?'today':''}" title="${fmt(d)} · ${pct}%">${d.getDate()}</div>`}).join('')}</div></div>`).join('')}</div></section><section class="section"><div class="section-title"><h2>Résumé</h2><span>${days.length} jours</span></div><div class="grid2"><div class="stat"><b>${days.filter(d=>dayCompletion(iso(d))===100).length}</b><span>journées complètes</span></div><div class="stat"><b>${days.reduce((a,d)=>a+activeHabits().filter(h=>isDone(iso(d),h.id)).length,0)}</b><span>règles cochées</span></div></div></section>`;
+}
+function renderSettings(v){
+  v.innerHTML=`<section class="hero"><div class="hero-top"><div><div class="day" style="font-size:30px">Ton Arc</div><div class="date">garde tes règles simples et réalistes</div></div><div style="font-size:28px">⌃</div></div><div class="tiny" style="margin-top:14px">Fenêtre par défaut : 1er octobre → 31 décembre 2026. Tu peux commencer plus tard sans perdre tes données.</div></section>
+  <section class="section"><div class="section-title"><h2>Mes habitudes</h2><span>${state.habits.length}</span></div><div class="card"><div class="habit-list">${state.habits.map(h=>`<div class="habit"><div class="check" style="opacity:.6">${h.active?'✓':'–'}</div><div class="habit-main"><div class="habit-name">${esc(h.name)}</div><div class="habit-note">${esc(h.note||'')} · ${h.active?'active':'inactive'}</div></div><button class="remove" data-edit="${h.id}">Modifier</button></div>`).join('')}</div><button class="add" id="addHabit2">＋ Ajouter une habitude</button></div></section>
+  <section class="section"><div class="section-title"><h2>Données</h2></div><div class="grid2"><button class="secondary" id="export">Exporter</button><button class="secondary" id="reset">Réinitialiser</button></div><p class="tiny" style="margin:9px 2px 0">Les données restent sur ton téléphone via le stockage local du navigateur. L'export crée un fichier JSON de sauvegarde.</p></section>`;
+  document.getElementById('addHabit2').onclick=()=>openHabitModal();
+  document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openHabitModal(b.dataset.edit));
+  document.getElementById('export').onclick=exportData;
+  document.getElementById('reset').onclick=()=>{if(confirm('Effacer tout le suivi de cet appareil ?')){localStorage.removeItem(KEY);state=load();showToast('Suivi réinitialisé');shell();}};
+  document.getElementById('quickAdd').onclick=()=>openHabitModal();
+}
+function openHabitModal(editId){
+  const existing=state.habits.find(h=>h.id===editId);
+  const m=document.getElementById('modal'), s=document.getElementById('sheet');
+  s.innerHTML=`<h3>${existing?'Modifier':'Ajouter'} une habitude</h3><div class="tiny">Choisis quelque chose de clair, faisable et utile à ton quotidien.</div><div class="field"><label>Nom</label><input id="hname" maxlength="44" value="${esc(existing?.name||'')}" placeholder="Ex. Lire 10 minutes"></div><div class="field"><label>Note</label><input id="hnote" maxlength="70" value="${esc(existing?.note||'')}" placeholder="Ex. manga, roman, cours…"></div><div class="grid2"><button class="secondary" id="cancel">Annuler</button><button class="primary" id="saveHabit">Enregistrer</button></div>${existing?`<button class="secondary" id="toggleActive" style="width:100%;margin-top:8px">${existing.active?'Désactiver':'Réactiver'}</button>`:''}`;
+  m.classList.add('show');m.setAttribute('aria-hidden','false');
+  document.getElementById('cancel').onclick=closeModal;
+  document.getElementById('saveHabit').onclick=()=>{
+    const name=document.getElementById('hname').value.trim(); const note=document.getElementById('hnote').value.trim();
+    if(!name){document.getElementById('hname').focus();return}
+    if(existing){existing.name=name;existing.note=note;} else {state.habits.push({id:crypto.randomUUID(),name,note,active:true});}
+    save(); closeModal(); renderView(); showToast('Habitude enregistrée');
+  };
+  if(existing)document.getElementById('toggleActive').onclick=()=>{existing.active=!existing.active;save();closeModal();renderView();showToast(existing.active?'Habitude activée':'Habitude désactivée')};
+}
+function closeModal(){document.getElementById('modal').classList.remove('show');document.getElementById('modal').setAttribute('aria-hidden','true')}
+function exportData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a');a.href=url;a.download='winter-arc-2026-sauvegarde.json';a.click();URL.revokeObjectURL(url);showToast('Sauvegarde exportée')}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),1800)}
+function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
+document.addEventListener('click',e=>{const b=e.target.closest('nav button');if(b){currentView=b.dataset.view;shell();}});
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
+shell();
+</script>
+</body>
+</html>
